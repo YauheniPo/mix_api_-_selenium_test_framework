@@ -3,9 +3,10 @@ package io.github.yauhenipo.framework.base.driver;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
-import io.github.yauhenipo.framework.utils.configurations.BrowserProperties;
-import io.github.yauhenipo.framework.utils.configurations.StageProperties;
+import io.github.yauhenipo.framework.util.configurations.BrowserProperties;
+import io.github.yauhenipo.framework.util.configurations.StageProperties;
 import lombok.extern.log4j.Log4j2;
+import org.openqa.selenium.WrapsDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import javax.naming.NamingException;
@@ -17,7 +18,7 @@ public final class Browser {
     private static String BROWSER_URL = StageProperties.getInstance().getUrl();
     private static boolean IS_BROWSER_HEADLESS = browserProperties.isHeadless();
     private static String currentBrowser = System.getProperty("browser", browserProperties.getBrowser());
-    private static final long IMPLICITLY_WAIT = browserProperties.getTimeout();
+    public static final long IMPLICITLY_WAIT = browserProperties.getTimeout();
     private static Browser instance = new Browser();
 
     private Browser() {
@@ -36,7 +37,7 @@ public final class Browser {
     }
 
     public static RemoteWebDriver getDriver() {
-        return (RemoteWebDriver) WebDriverRunner.getWebDriver();
+        return ((RemoteWebDriver)((WrapsDriver)WebDriverRunner.getWebDriver()).getWrappedDriver());
     }
 
     public void openStartPage() {
@@ -47,7 +48,6 @@ public final class Browser {
         Configuration.timeout = IMPLICITLY_WAIT;
         Configuration.headless = IS_BROWSER_HEADLESS;
         Configuration.baseUrl = BROWSER_URL;
-        Configuration.startMaximized = true;
         try {
             BrowserFactory.setUp(currentBrowser);
         } catch (NamingException e) {

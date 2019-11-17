@@ -132,7 +132,7 @@
                 <configuration>
                     <systemPropertyVariables>
                         <test.env>prod</test.env>
-                        <chromeoptions.args>--disable-infobars,--incognito</chromeoptions.args>
+                        <chromeoptions.args>--disable-infobars,--incognito,--start-maximized</chromeoptions.args>
                     </systemPropertyVariables>
                     <suiteXmlFiles>
                         <suiteXmlFile>${project.basedir}/src/main/resources/${suiteFile}</suiteXmlFile>

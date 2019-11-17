@@ -3,11 +3,12 @@ package io.github.yauhenipo.framework.base.driver;
 import com.codeborne.selenide.WebDriverRunner;
 import io.github.bonigarcia.wdm.DriverManagerType;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import io.github.yauhenipo.framework.utils.configurations.BrowserProperties;
-import io.github.yauhenipo.framework.utils.listener.EventHandler;
+import io.github.yauhenipo.framework.util.configurations.BrowserProperties;
+import io.github.yauhenipo.framework.util.listener.EventHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import javax.naming.NamingException;
@@ -22,9 +23,10 @@ final public class BrowserFactory {
 
         CHROME {
             @Override
-            public WebDriver getWebDriver() {
+            public RemoteWebDriver getWebDriver() {
                 ChromeOptions options = new ChromeOptions();
                 if (BrowserProperties.getInstance().isHeadless()) {
+                    options.addArguments("--start-maximized");
                     options.addArguments("headless");
                 }
                 return new ChromeDriver(options);

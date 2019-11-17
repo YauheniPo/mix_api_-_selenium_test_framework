@@ -1,4 +1,4 @@
-package io.github.yauhenipo.framework.utils.listener;
+package io.github.yauhenipo.framework.util.listener;
 
 import org.testng.IAnnotationTransformer;
 import org.testng.annotations.ITestAnnotation;

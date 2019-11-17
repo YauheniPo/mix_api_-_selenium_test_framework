@@ -1,6 +1,6 @@
-package io.github.yauhenipo.framework.utils.listener;
+package io.github.yauhenipo.framework.util.listener;
 
-import io.github.yauhenipo.framework.utils.configurations.FrameworkProperties;
+import io.github.yauhenipo.framework.util.configurations.FrameworkProperties;
 import lombok.extern.log4j.Log4j2;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;

@@ -1,4 +1,4 @@
-package io.github.yauhenipo.framework.utils.listener;
+package io.github.yauhenipo.framework.util.listener;
 
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.By;

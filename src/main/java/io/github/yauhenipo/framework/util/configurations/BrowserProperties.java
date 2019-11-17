@@ -1,4 +1,4 @@
-package io.github.yauhenipo.framework.utils.configurations;
+package io.github.yauhenipo.framework.util.configurations;
 
 import lombok.Getter;
 import ru.yandex.qatools.properties.PropertyLoader;

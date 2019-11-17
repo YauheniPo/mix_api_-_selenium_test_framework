@@ -1,5 +1,5 @@
 package io.github.yauhenipo.app;
 
-public class Constants {
+public class Constant {
 
 }

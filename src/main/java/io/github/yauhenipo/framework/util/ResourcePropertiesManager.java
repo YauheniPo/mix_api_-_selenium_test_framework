@@ -1,4 +1,4 @@
-package io.github.yauhenipo.framework.utils;
+package io.github.yauhenipo.framework.util;
 
 import lombok.Cleanup;
 import lombok.NonNull;
