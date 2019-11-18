@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="hiqos-popo" parallel="true" thread-count="10">
+<suite name="yauheni-popo" parallel="true" thread-count="10">
     <listeners>
-        <listener class-name="io.github.yauhenipo.framework.utils.listener.FailureRetryListener"/>
+        <listener class-name="io.github.yauhenipo.framework.util.listener.FailureRetryListener"/>
     </listeners>
     <test name="onliner" parallel="methods" thread-count="10">
         <classes>

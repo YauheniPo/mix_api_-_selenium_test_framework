@@ -1,27 +1,22 @@
 package io.github.yauhenipo.framework.base.driver;
 
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.WebDriverRunner;
-import io.github.yauhenipo.framework.utils.configurations.BrowserProperties;
-import io.github.yauhenipo.framework.utils.configurations.StageProperties;
+import io.github.yauhenipo.framework.util.configurations.Config;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import javax.naming.NamingException;
+import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public final class Browser {
 
-    private static BrowserProperties browserProperties = BrowserProperties.getInstance();
-    private static String BROWSER_URL = StageProperties.getInstance().getUrl();
-    private static boolean IS_BROWSER_HEADLESS = browserProperties.isHeadless();
-    private static String currentBrowser = System.getProperty("browser", browserProperties.getBrowser());
-    private static final long IMPLICITLY_WAIT = browserProperties.getTimeout();
+    private static final String CURRENT_BROWSER = System.getProperty("browser", Config.getBrowserProperties().getBrowser());
+    private static ThreadLocal<EventFiringWebDriver> driverHolder = ThreadLocal.withInitial(Browser::initDriver);
     private static Browser instance = new Browser();
 
     private Browser() {
-        initDriver();
+        log.info("Init Browser");
     }
 
     public static Browser getInstance() {
@@ -36,22 +31,51 @@ public final class Browser {
     }
 
     public static RemoteWebDriver getDriver() {
-        return (RemoteWebDriver) WebDriverRunner.getWebDriver();
+        if (driverHolder.get() == null) {
+            driverHolder.set(initDriver());
+        }
+        return (RemoteWebDriver)driverHolder.get().getWrappedDriver();
     }
 
-    public void openStartPage() {
-        Selenide.open("/");
-    }
-
-    private static void initDriver() {
-        Configuration.timeout = IMPLICITLY_WAIT;
-        Configuration.headless = IS_BROWSER_HEADLESS;
-        Configuration.baseUrl = BROWSER_URL;
-        Configuration.startMaximized = true;
+    public void exit() {
         try {
-            BrowserFactory.setUp(currentBrowser);
+            getDriver().quit();
+            log.info("WebDriver quit");
+        } catch (Exception e) {
+            log.error(this, e);
+        } finally {
+            if (isBrowserAlive()) {
+                driverHolder.set(null);
+            }
+        }
+    }
+
+    private boolean isBrowserAlive() {
+        return driverHolder.get() != null;
+    }
+
+    public void navigate(final String url) {
+        getDriver().navigate().to(url);
+    }
+
+    public void openBaseUrl() {
+        navigate(Config.getStageProperties().getUrl());
+        windowMaximise();
+    }
+
+    public void windowMaximise() {
+        getDriver().manage().window().maximize();
+    }
+
+    private static EventFiringWebDriver initDriver() {
+        try {
+            EventFiringWebDriver driver = BrowserFactory.setUp(CURRENT_BROWSER);
+            driver.manage().timeouts().implicitlyWait(Config.getBrowserProperties().getTimeout(), TimeUnit.SECONDS);
+            return driver;
         } catch (NamingException e) {
+            log.error(e);
             e.printStackTrace();
         }
+        return null;
     }
 }

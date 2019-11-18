@@ -1,7 +1,7 @@
 package io.github.yauhenipo.app.test;
 
 import io.github.yauhenipo.app.TestGroup;
-import io.github.yauhenipo.app.pages.MainPage;
+import io.github.yauhenipo.app.page.MainPage;
 import io.github.yauhenipo.framework.base.BaseTest;
 import lombok.extern.log4j.Log4j2;
 import org.testng.annotations.Test;
@@ -18,14 +18,9 @@ public class TestGithub extends BaseTest {
     @Severity(value = SeverityLevel.NORMAL)
     @Test(groups = {TestGroup.SEARCH, TestGroup.MOBILE})
     public void testSearchProductItems() {
+        final String gitHubAccount = "YauheniPo";
+
         MainPage mainPage = new MainPage();
-    }
-
-    @Description(value = "Validation of price")
-    @Features(value = "Validation of average price")
-    @Severity(value = SeverityLevel.NORMAL)
-    @Test(groups = {TestGroup.PRICE, TestGroup.MOBILE, TestGroup.PRODUCT})
-    public void testPrice() {
-
+        mainPage.header.search(gitHubAccount);
     }
 }

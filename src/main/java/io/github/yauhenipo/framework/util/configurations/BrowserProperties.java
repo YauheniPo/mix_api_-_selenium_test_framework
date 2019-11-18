@@ -1,4 +1,4 @@
-package io.github.yauhenipo.framework.utils.configurations;
+package io.github.yauhenipo.framework.util.configurations;
 
 import lombok.Getter;
 import ru.yandex.qatools.properties.PropertyLoader;
@@ -19,6 +19,10 @@ public class BrowserProperties {
     @Getter
     @Property("browser.timeout")
     private long timeout = 10;
+
+    @Getter
+    @Property("condition.timeout")
+    private long conditionTimeout = 10;
 
     private static BrowserProperties configuration = new BrowserProperties();
 

@@ -1,13 +1,13 @@
 package io.github.yauhenipo.framework.base.driver;
 
-import com.codeborne.selenide.WebDriverRunner;
 import io.github.bonigarcia.wdm.DriverManagerType;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import io.github.yauhenipo.framework.utils.configurations.BrowserProperties;
-import io.github.yauhenipo.framework.utils.listener.EventHandler;
+import io.github.yauhenipo.framework.util.configurations.BrowserProperties;
+import io.github.yauhenipo.framework.util.listener.EventHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import javax.naming.NamingException;
@@ -22,7 +22,7 @@ final public class BrowserFactory {
 
         CHROME {
             @Override
-            public WebDriver getWebDriver() {
+            public RemoteWebDriver getWebDriver() {
                 ChromeOptions options = new ChromeOptions();
                 if (BrowserProperties.getInstance().isHeadless()) {
                     options.addArguments("headless");
@@ -42,7 +42,7 @@ final public class BrowserFactory {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void setUp(final String browser) throws NamingException {
+    public static EventFiringWebDriver setUp(final String browser) throws NamingException {
         Set<String> driverNames = driverManagerMap.keySet().stream().map(Enum::name).collect(Collectors.toSet());
         BrowserType browserType = BrowserType.valueOf(browser.toUpperCase(Locale.ENGLISH));
         if (driverNames.contains(browserType.name())) {
@@ -50,7 +50,7 @@ final public class BrowserFactory {
             EventFiringWebDriver eventDriver = new EventFiringWebDriver(browserType.getWebDriver());
             EventHandler handler = new EventHandler();
             eventDriver.register(handler);
-            WebDriverRunner.setWebDriver(eventDriver);
+            return eventDriver;
         } else {
             throw new NamingException(String.format("Wrong Browser Name: %s", browser));
         }
