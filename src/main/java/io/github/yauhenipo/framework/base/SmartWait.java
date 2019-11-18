@@ -1,6 +1,7 @@
 package io.github.yauhenipo.framework.base;
 
 import io.github.yauhenipo.framework.base.driver.Browser;
+import io.github.yauhenipo.framework.util.configurations.Config;
 import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedCondition;
@@ -33,7 +34,7 @@ final public class SmartWait {
         } catch (Exception e) {
             log.debug("SmartWait.waitFor", e);
         } finally {
-            Browser.getDriver().manage().timeouts().implicitlyWait(Browser.IMPLICITLY_WAIT, TimeUnit.SECONDS);
+            Browser.getDriver().manage().timeouts().implicitlyWait(Config.getBrowserProperties().getConditionTimeout(), TimeUnit.SECONDS);
         }
         return null;
     }

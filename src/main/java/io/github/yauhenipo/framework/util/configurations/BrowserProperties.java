@@ -20,6 +20,10 @@ public class BrowserProperties {
     @Property("browser.timeout")
     private long timeout = 10;
 
+    @Getter
+    @Property("condition.timeout")
+    private long conditionTimeout = 10;
+
     private static BrowserProperties configuration = new BrowserProperties();
 
     private BrowserProperties() {

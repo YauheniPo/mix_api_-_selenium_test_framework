@@ -1,6 +1,5 @@
 package io.github.yauhenipo.framework.base.driver;
 
-import com.codeborne.selenide.WebDriverRunner;
 import io.github.bonigarcia.wdm.DriverManagerType;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.yauhenipo.framework.util.configurations.BrowserProperties;
@@ -26,7 +25,6 @@ final public class BrowserFactory {
             public RemoteWebDriver getWebDriver() {
                 ChromeOptions options = new ChromeOptions();
                 if (BrowserProperties.getInstance().isHeadless()) {
-                    options.addArguments("--start-maximized");
                     options.addArguments("headless");
                 }
                 return new ChromeDriver(options);
@@ -44,7 +42,7 @@ final public class BrowserFactory {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void setUp(final String browser) throws NamingException {
+    public static EventFiringWebDriver setUp(final String browser) throws NamingException {
         Set<String> driverNames = driverManagerMap.keySet().stream().map(Enum::name).collect(Collectors.toSet());
         BrowserType browserType = BrowserType.valueOf(browser.toUpperCase(Locale.ENGLISH));
         if (driverNames.contains(browserType.name())) {
@@ -52,7 +50,7 @@ final public class BrowserFactory {
             EventFiringWebDriver eventDriver = new EventFiringWebDriver(browserType.getWebDriver());
             EventHandler handler = new EventHandler();
             eventDriver.register(handler);
-            WebDriverRunner.setWebDriver(eventDriver);
+            return eventDriver;
         } else {
             throw new NamingException(String.format("Wrong Browser Name: %s", browser));
         }
