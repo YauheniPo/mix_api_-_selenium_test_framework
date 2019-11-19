@@ -2,7 +2,9 @@ package io.github.yauhenipo.app.test;
 
 import io.github.yauhenipo.app.TestGroup;
 import io.github.yauhenipo.app.page.MainPage;
+import io.github.yauhenipo.app.page.SearchPage;
 import io.github.yauhenipo.framework.base.BaseTest;
+import io.github.yauhenipo.framework.util.configurations.Config;
 import lombok.extern.log4j.Log4j2;
 import org.testng.annotations.Test;
 import ru.yandex.qatools.allure.annotations.Description;
@@ -18,9 +20,10 @@ public class TestGithub extends BaseTest {
     @Severity(value = SeverityLevel.NORMAL)
     @Test(groups = {TestGroup.SEARCH, TestGroup.MOBILE})
     public void testSearchProductItems() {
-        final String gitHubAccount = "YauheniPo";
-
         MainPage mainPage = new MainPage();
-        mainPage.header.search(gitHubAccount);
+        ((SearchPage)mainPage.header.search(Config.getStageProperties().getUser()).pressEnter(SearchPage.class))
+                .selectItem(SearchPage.SearchingMenu.USERS);
+
+
     }
 }
