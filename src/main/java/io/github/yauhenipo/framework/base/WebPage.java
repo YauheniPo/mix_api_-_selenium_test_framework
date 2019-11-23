@@ -73,6 +73,9 @@ public abstract class WebPage extends BaseEntity {
     }
 
     private List<WebElement> getElements(List<WebElement> webElements, String... locators) {
+        if (webElements.size() == 0) {
+            return null;
+        }
         List<WebElement> elements = new ArrayList<>();
         if (locators.length == 0) {
             log.info(String.format("Was found %d elements", webElements.size()));
