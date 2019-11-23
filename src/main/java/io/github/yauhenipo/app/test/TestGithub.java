@@ -12,6 +12,10 @@ import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Severity;
 import ru.yandex.qatools.allure.model.SeverityLevel;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import java.util.List;
+
 @Log4j2
 public class TestGithub extends BaseTest {
 
@@ -20,10 +24,15 @@ public class TestGithub extends BaseTest {
     @Severity(value = SeverityLevel.NORMAL)
     @Test(groups = {TestGroup.SEARCH, TestGroup.MOBILE})
     public void testSearchProductItems() {
+        final String searchingUser = Config.getStageProperties().getUser();
         MainPage mainPage = new MainPage();
-        ((SearchPage)mainPage.header.search(Config.getStageProperties().getUser()).pressEnter(SearchPage.class))
-                .selectItem(SearchPage.SearchingMenu.USERS);
+        List<String> searchContentItems = ((SearchPage)mainPage.header.search(searchingUser)
+                .pressEnter(SearchPage.class))
+                .selectItem(SearchPage.SearchingMenu.USERS)
+                .getSearchContentItems();
 
-
+        assertThat(String.format("User '%s' does not exist in searching items", searchingUser),
+                searchContentItems,
+                everyItem(containsString(searchingUser)));
     }
 }
