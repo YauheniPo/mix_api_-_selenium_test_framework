@@ -7,19 +7,42 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Log4j2
 public abstract class WebPage extends BaseEntity {
 
     private String locator;
 
+    protected String getText(String locator) {
+        return findElement(locator).getText();
+    }
+
+    protected String getAttribute(String locator, String attribute) {
+        return findElement(locator).getAttribute(attribute);
+    }
+
     protected void setValue(String locator, String sendValue) {
-        findElement(locator).sendKeys(sendValue);
+        log.info(String.format("Set Value to element. Value: %s; locator: %s", sendValue, locator));
+        SmartWait.webDriverWait(ExpectedConditions.elementToBeClickable(By.xpath(locator)), Config.getBrowserProperties().getConditionTimeout());
+        ExpectedCondition<Boolean> condition = driver -> {
+            try {
+                WebElement element = findElement(locator);
+                Objects.requireNonNull(element).clear();
+                Objects.requireNonNull(element).sendKeys(sendValue);
+                return element.getAttribute("value").equals(sendValue);
+            } catch (Exception e) {
+                log.debug(e);
+                return false;
+            }
+        };
+        SmartWait.webDriverWait(condition, Config.getBrowserProperties().getConditionTimeout());
     }
 
     protected void click(String locator) {
@@ -37,6 +60,7 @@ public abstract class WebPage extends BaseEntity {
 
     private List<WebElement> findElements(long timeout, String... locators) {
         SmartWait.waitForJSandJQueryToLoad();
+        log.info(String.format("Find element: %s", Arrays.asList(locators)));
         ExpectedCondition<List<WebElement>> condition = driver -> {
             try {
                 return getElements(Browser.getDriver().findElements(By.xpath(locators[0])), Arrays.copyOfRange(locators, 1, locators.length));
@@ -63,7 +87,7 @@ public abstract class WebPage extends BaseEntity {
     }
 
     public <T extends WebPage> WebPage pressEnter(Class<T> nextPage) {
-        pressEnter();
+        pressEnter(this.locator);
         try {
             return nextPage.getConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -73,7 +97,8 @@ public abstract class WebPage extends BaseEntity {
         return null;
     }
 
-    private void pressEnter() {
-        findElement(this.locator).sendKeys(Keys.ENTER);
+    protected void pressEnter(String locator) {
+        log.info(String.format("Press ENTER: %s", locator));
+        findElement(locator).sendKeys(Keys.ENTER);
     }
 }

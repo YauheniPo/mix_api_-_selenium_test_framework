@@ -1,7 +1,6 @@
 name: Java CI - Test
 
 on: 
-  push:
   pull_request:
   schedule:
     - cron: "0 2 * * 1-5"
