@@ -11,9 +11,15 @@ public class SearchPage extends BaseGitHubPage {
 
     private static final String SEARCHING_LIST_LOCATOR = ".//div[@class='px-2']";
     private static final String SEARCHING_ITEM_CONTENT_LOCATOR = ".//div[contains(@class, 'list-item')]";
+    private static final String SEARCHING_ITEM_LOGIN_LOCATOR = ".//em";
 
     public List<String> getSearchContentItems() {
         return findElements(SEARCHING_LIST_LOCATOR, SEARCHING_ITEM_CONTENT_LOCATOR).stream()
+                .map(WebElement::getText).collect(Collectors.toList());
+    }
+
+    public List<String> getSearchLoginItems() {
+        return findElements(SEARCHING_LIST_LOCATOR, SEARCHING_ITEM_CONTENT_LOCATOR, SEARCHING_ITEM_LOGIN_LOCATOR).stream()
                 .map(WebElement::getText).collect(Collectors.toList());
     }
 
