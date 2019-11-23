@@ -75,6 +75,7 @@ public abstract class WebPage extends BaseEntity {
     private List<WebElement> getElements(List<WebElement> webElements, String... locators) {
         List<WebElement> elements = new ArrayList<>();
         if (locators.length == 0) {
+            log.info(String.format("Was found %d elements", webElements.size()));
             return webElements;
         }
         for (WebElement elem : webElements) {
@@ -83,6 +84,7 @@ public abstract class WebPage extends BaseEntity {
             }
             elements.addAll(elem.findElements(By.xpath(locators[0])));
         }
+        log.info(String.format("For the next getting elements: size: %d; locators: [%s]", elements.size(), Arrays.asList(locators)));
         return getElements(elements, Arrays.copyOfRange(locators, 1, locators.length));
     }
 
