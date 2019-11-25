@@ -16,6 +16,10 @@ public class StageProperties {
     private String url;
 
     @Getter
+    @Property("api.url")
+    private String apiUrl;
+
+    @Getter
     @Property("stage.user")
     private String user;
 
