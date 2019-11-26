@@ -30,7 +30,6 @@ public abstract class WebPage extends BaseEntity {
 
     protected void setValue(String locator, String sendValue) {
         log.info(String.format("Set Value to element. Value: %s; locator: %s", sendValue, locator));
-        SmartWait.webDriverWait(ExpectedConditions.elementToBeClickable(By.xpath(locator)), Config.getBrowserProperties().getConditionTimeout());
         ExpectedCondition<Boolean> condition = driver -> {
             try {
                 WebElement element = findElement(locator);
@@ -42,11 +41,24 @@ public abstract class WebPage extends BaseEntity {
                 return false;
             }
         };
-        SmartWait.webDriverWait(condition, Config.getBrowserProperties().getConditionTimeout());
+        SmartWait.waitFor(condition, Config.getBrowserProperties().getConditionTimeout());
     }
 
     protected void click(String locator) {
-        findElement(locator).click();
+        log.info(String.format("Click to locator %s", locator));
+        waitUntilElementToBeClickable(locator).click();
+    }
+
+    private WebElement waitUntilElementToBeClickable(String locator) {
+        return SmartWait.waitFor(ExpectedConditions.elementToBeClickable(By.xpath(locator)), Config.getBrowserProperties().getConditionTimeout());
+    }
+
+    protected WebElement waitForElementToBeExist(String locator, long timeOutInSeconds) {
+        return SmartWait.waitFor(ExpectedConditions.presenceOfElementLocated(By.xpath(locator)), timeOutInSeconds);
+    }
+
+    protected WebElement waitForElementToBeExist(String locator) {
+        return waitForElementToBeExist(locator, Config.getBrowserProperties().getConditionTimeout());
     }
 
     private WebElement findElement(String locator) {
@@ -60,9 +72,11 @@ public abstract class WebPage extends BaseEntity {
 
     private List<WebElement> findElements(long timeout, String... locators) {
         SmartWait.waitForJSandJQueryToLoad();
+        waitUntilProgressLoadingBar();
         log.info(String.format("Find element: %s", Arrays.asList(locators)));
         ExpectedCondition<List<WebElement>> condition = driver -> {
             try {
+                log.info(String.format("findElements: locator: %s", locators[0]));
                 return getElements(Browser.getDriver().findElements(By.xpath(locators[0])), Arrays.copyOfRange(locators, 1, locators.length));
             } catch (Exception e) {
                 log.debug(e.getMessage());
@@ -73,6 +87,7 @@ public abstract class WebPage extends BaseEntity {
     }
 
     private List<WebElement> getElements(List<WebElement> webElements, String... locators) {
+        log.info(String.format("getElements: element size: %d; locators: %s", webElements.size(), Arrays.asList(locators)));
         if (webElements.size() == 0) {
             return null;
         }
@@ -106,4 +121,6 @@ public abstract class WebPage extends BaseEntity {
         log.info(String.format("Press ENTER: %s", locator));
         findElement(locator).sendKeys(Keys.ENTER);
     }
+
+    protected abstract void waitUntilProgressLoadingBar();
 }

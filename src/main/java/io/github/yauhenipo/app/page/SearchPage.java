@@ -32,11 +32,17 @@ public class SearchPage extends BaseGitHubPage {
     public enum SearchingMenu {
         USERS("Users");
 
-        @NonNull public String item;
+        @NonNull
+        public String item;
         private static final String SEARCHING_MENU_ITEM_LOCATOR = ".//a[contains(@class, '-item') and not(contains(@class, 'UnderlineNav'))][contains(text(), '%s')]";
 
         public String getItemLocator() {
             return String.format(SEARCHING_MENU_ITEM_LOCATOR, this.item);
         }
+    }
+
+    @Override
+    public void waitUntilProgressLoadingBar() {
+        waitForElementToBeExist(progressLoaderBarLocator);
     }
 }

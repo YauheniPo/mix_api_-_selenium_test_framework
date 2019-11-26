@@ -14,4 +14,6 @@ public class Header extends WebPage {
         return this;
     }
 
+    @Override
+    protected void waitUntilProgressLoadingBar() {}
 }
