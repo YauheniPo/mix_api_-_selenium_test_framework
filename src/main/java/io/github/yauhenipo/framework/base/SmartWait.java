@@ -10,7 +10,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.Objects;
@@ -45,17 +44,6 @@ final public class SmartWait {
         return null;
     }
 
-    public static void webDriverWait(ExpectedCondition condition, long timeOutInSeconds) {
-        Browser.getDriver().manage().timeouts().implicitlyWait(0L, TimeUnit.SECONDS);
-        try {
-            new WebDriverWait(Browser.getDriver(), timeOutInSeconds)
-                    .ignoring(StaleElementReferenceException.class, WebDriverException.class)
-                    .until(condition);
-        } finally {
-            Browser.getDriver().manage().timeouts().implicitlyWait(Config.getBrowserProperties().getTimeout(), TimeUnit.SECONDS);
-        }
-    }
-
     /**
      * Wait for true boolean.
      *
@@ -76,7 +64,7 @@ final public class SmartWait {
         // wait for jQuery to load
         ExpectedCondition<Boolean> jQueryLoad = driver -> {
             try {
-                return 0 == (Long)((JavascriptExecutor) Objects.requireNonNull(driver))
+                return 0 == (Long) ((JavascriptExecutor) Objects.requireNonNull(driver))
                         .executeScript("return $.active");
             } catch (Exception e) {
                 log.info("no jquery present");
@@ -89,7 +77,7 @@ final public class SmartWait {
                 .executeScript("return document.readyState")
                 .toString().equals("complete");
 
-        webDriverWait(jQueryLoad, Config.getBrowserProperties().getConditionTimeout());
-        webDriverWait(jsLoad, Config.getBrowserProperties().getConditionTimeout());
+        waitForTrue(jQueryLoad, Config.getBrowserProperties().getConditionTimeout());
+        waitForTrue(jsLoad, Config.getBrowserProperties().getConditionTimeout());
     }
 }
