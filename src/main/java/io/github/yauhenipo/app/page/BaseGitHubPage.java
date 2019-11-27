@@ -8,6 +8,4 @@ public abstract class BaseGitHubPage extends WebPage implements WithHeader {
     private String loaderBarLocator = "//*[contains(@class, 'progress') and contains(@class, 'loader')]";
     String progressLoaderBarLocator = loaderBarLocator + "[contains(@style, '100%')]";
 
-    @Override
-    protected void waitUntilProgressLoadingBar() {}
 }

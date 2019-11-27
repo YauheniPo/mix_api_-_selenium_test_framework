@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Log4j2
-public abstract class WebPage extends BaseEntity {
+public abstract class WebPage extends AbstractWebPage {
 
     private String locator;
 
@@ -106,7 +106,7 @@ public abstract class WebPage extends BaseEntity {
         return getElements(elements, Arrays.copyOfRange(locators, 1, locators.length));
     }
 
-    public <T extends WebPage> WebPage pressEnter(Class<T> nextPage) {
+    public <T extends AbstractWebPage> AbstractWebPage pressEnter(Class<T> nextPage) {
         pressEnter(this.locator);
         try {
             return nextPage.getConstructor().newInstance();
@@ -122,5 +122,6 @@ public abstract class WebPage extends BaseEntity {
         findElement(locator).sendKeys(Keys.ENTER);
     }
 
-    protected abstract void waitUntilProgressLoadingBar();
+    @Override
+    protected void waitUntilProgressLoadingBar(){}
 }
