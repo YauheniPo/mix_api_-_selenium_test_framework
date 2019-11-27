@@ -13,7 +13,7 @@ public class BrowserProperties {
     private String browser = "chrome";
 
     @Getter
-    @Property("browser.headless")
+    @Property("browseHeadless")
     private boolean isHeadless = false;
 
     @Getter
