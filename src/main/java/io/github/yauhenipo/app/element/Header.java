@@ -13,7 +13,4 @@ public class Header extends WebPage {
         setValue(SEARCH_INPUT_FIELD, searchValue);
         return this;
     }
-
-    @Override
-    protected void waitUntilProgressLoadingBar() {}
 }

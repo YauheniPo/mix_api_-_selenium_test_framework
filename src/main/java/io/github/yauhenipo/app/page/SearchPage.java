@@ -2,11 +2,13 @@ package io.github.yauhenipo.app.page;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 public class SearchPage extends BaseGitHubPage {
 
     private static final String SEARCHING_LIST_LOCATOR = ".//div[@class='px-2']";
@@ -43,6 +45,7 @@ public class SearchPage extends BaseGitHubPage {
 
     @Override
     public void waitUntilProgressLoadingBar() {
+        log.info("Wait for progress bar");
         waitForElementToBeExist(progressLoaderBarLocator);
     }
 }

@@ -23,7 +23,7 @@ jobs:
       with:
         java-version: ${{ matrix.java }}
     - name: tests RUN
-      run: mvn clean compile test site --file pom.xml
+      run: mvn clean compile -Dbrowser=firefox -DbrowseHeadless=true test site --file pom.xml
     - uses: actions/upload-artifact@v1
       with:
         name: artifacts
