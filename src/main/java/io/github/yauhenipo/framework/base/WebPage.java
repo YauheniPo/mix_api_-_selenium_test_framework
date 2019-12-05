@@ -106,7 +106,7 @@ public abstract class WebPage extends AbstractWebPage {
         return getElements(elements, Arrays.copyOfRange(locators, 1, locators.length));
     }
 
-    public <T extends WebPage> WebPage pressEnter(Class<T> nextPage) {
+    public <TPage extends WebPage> TPage pressEnter(Class<TPage> nextPage) {
         pressEnter(this.locator);
         try {
             return nextPage.getConstructor().newInstance();
