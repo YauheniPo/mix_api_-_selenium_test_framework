@@ -29,12 +29,12 @@ public class TestGithub extends BaseTestApi {
         final String searchingUser = Config.getStageProperties().getUser();
 
         MainPage mainPage = new MainPage();
-        List<String> searchLoginUsers = ((SearchPage)mainPage
+        List<String> searchLoginUsers = mainPage
                 .header
                 .search(searchingUser)
-                .pressEnter(SearchPage.class))
+                .pressEnter(SearchPage.class)
                 .selectItem(SearchPage.SearchingMenu.USERS)
-                .getSearchLoginItems();
+                .getSearchContentItems(SearchPage.SearchResultTable.build().content().login());
 
         Response response = RestAssured.given().param("q", searchingUser)
                 .get("search/users").then().extract().response();
@@ -44,5 +44,15 @@ public class TestGithub extends BaseTestApi {
         assertThat(String.format("User '%s' does not exist in searching items", searchingUser),
                 searchLoginUsers,
                 equalTo(loginUsers));
+    }
+
+    @Features(value = "Contributor")
+    @Description(value = "Validation of searching project contributor")
+    @Severity(value = SeverityLevel.NORMAL)
+    @Test(groups = {TestGroup.SEARCH, TestGroup.USER})
+    public void testSearchProjectContributor() {
+        final String searchingUser = Config.getStageProperties().getUser();
+
+
     }
 }
