@@ -1,6 +1,6 @@
-package io.github.yauhenipo.app.element;
+package io.github.yauhenipo.app.page.repository.element;
 
-import io.github.yauhenipo.app.page.BaseGitHubPage;
+import io.github.yauhenipo.app.page.repository.RepositoryPage;
 import io.github.yauhenipo.framework.base.WebPage;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -8,9 +8,9 @@ import lombok.extern.log4j.Log4j2;
 import java.lang.reflect.InvocationTargetException;
 
 @Log4j2
-public class UserNavBar extends WebPage {
+public class RepositoryNavBar extends WebPage {
 
-    public <TPage extends BaseGitHubPage> TPage select(NavBar tab, Class<TPage> nextPage) {
+    public <TPage extends RepositoryPage> TPage select(NavBar tab, Class<TPage> nextPage) {
         click(tab.getItemLocator());
         try {
             return nextPage.getConstructor().newInstance();
@@ -23,13 +23,15 @@ public class UserNavBar extends WebPage {
 
     @AllArgsConstructor
     public enum NavBar {
-        REPOSITORIES("Repositories");
+        CODE("", "Code"),
+        INSIGHTS("pulse", "Insights");
 
-        private String item;
-        private static final String USER_NAV_BAR_ITEM = ".//a[contains(text(), '%s')]";
+        private String hrefPart;
+        private String text;
+        private static final String REPO_NAV_BAR_ITEM = ".//nav[contains(@class, 'reponav')]//*[contains(@href, '%s') or contains(text(), '%s')]";
 
         public String getItemLocator() {
-            return String.format(USER_NAV_BAR_ITEM, this.item);
+            return String.format(REPO_NAV_BAR_ITEM, this.hrefPart, this.text);
         }
     }
 }

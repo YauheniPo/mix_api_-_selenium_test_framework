@@ -6,6 +6,6 @@ import io.github.yauhenipo.framework.base.WebPage;
 public abstract class BaseGitHubPage extends WebPage implements WithHeader {
 
     private String loaderBarLocator = "//*[contains(@class, 'progress') and contains(@class, 'loader')]";
-    String progressLoaderBarLocator = loaderBarLocator + "[contains(@style, '100%')]";
+    protected String progressLoaderBarLocator = loaderBarLocator + "[contains(@style, '100%')]";
 
 }

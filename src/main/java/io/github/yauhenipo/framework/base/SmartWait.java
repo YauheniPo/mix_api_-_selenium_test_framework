@@ -38,10 +38,10 @@ final public class SmartWait {
             return wait.until(condition);
         } catch (Exception e) {
             log.debug("SmartWait.waitFor", e);
+            throw e;
         } finally {
             Browser.getDriver().manage().timeouts().implicitlyWait(Config.getBrowserProperties().getTimeout(), TimeUnit.SECONDS);
         }
-        return null;
     }
 
     /**
