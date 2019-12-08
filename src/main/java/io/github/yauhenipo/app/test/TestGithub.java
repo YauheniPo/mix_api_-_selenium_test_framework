@@ -8,6 +8,7 @@ import io.github.yauhenipo.app.page.MainPage;
 import io.github.yauhenipo.app.page.repository.RepositoryInsightsTab;
 import io.github.yauhenipo.app.page.repository.RepositoryPage;
 import io.github.yauhenipo.app.page.SearchPage;
+import io.github.yauhenipo.app.page.repository.element.ContributorsDataTab;
 import io.github.yauhenipo.app.page.repository.element.RepositoryNavBar;
 import io.github.yauhenipo.framework.base.BaseTestApi;
 import io.github.yauhenipo.framework.util.configurations.Config;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 @Log4j2
 public class TestGithub extends BaseTestApi {
@@ -41,7 +43,7 @@ public class TestGithub extends BaseTestApi {
                 .search(searchingUser)
                 .pressEnter(SearchPage.class)
                 .selectItem(SearchPage.SearchingMenu.USERS)
-                .getSearchContentItems(SearchPage.SearchResultTable.build().content().login());
+                .getContentItems(SearchPage.SearchResultTable.build().content().login());
 
         Response response = RestAssured.given()
                 .param("q", searchingUser)
@@ -63,7 +65,8 @@ public class TestGithub extends BaseTestApi {
     public void testSearchProjectContributor() {
 
         final String forkedRepoText = "healenium/healenium-web";
-        new MainPage()
+
+        List<String> contributors = new MainPage()
                 .header
                 .search(searchingUser)
                 .pressEnter(SearchPage.class)
@@ -71,10 +74,16 @@ public class TestGithub extends BaseTestApi {
                 .clickByTextPresent(SearchPage.SearchResultTable.build().content().login(),
                         searchingUser,
                         AccountPage.class)
-                .selectNavBar(UserNavBar.NavBar.REPOSITORIES, RepositoriesTab.class)
+                .userNavBar
+                .select(UserNavBar.NavBarImpl.REPOSITORIES, RepositoriesTab.class)
                 .clickByContainsTextPresent(RepositoriesTab.RepositoriesTable.build().content().forked(),
                         forkedRepoText,
                         RepositoryPage.class)
-                .selectNavBar(RepositoryNavBar.NavBar.INSIGHTS, RepositoryInsightsTab.class);
+                .repoNavBar
+                .select(RepositoryNavBar.NavBarImpl.INSIGHTS, RepositoryInsightsTab.class)
+                .selectMenuItem(RepositoryInsightsTab.Menu.CONTRIBUTORS, ContributorsDataTab.class)
+                .getContentItems(ContributorsDataTab.ContributorsDataTable.build().list().login());
+
+        assertThat("Contributors list does not exist item.", contributors, hasItems(searchingUser));
     }
 }

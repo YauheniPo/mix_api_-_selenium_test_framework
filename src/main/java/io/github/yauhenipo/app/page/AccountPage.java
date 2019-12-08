@@ -1,11 +1,9 @@
 package io.github.yauhenipo.app.page;
 
 import io.github.yauhenipo.app.element.UserNavBar;
-import io.github.yauhenipo.app.layout.WithUserNavBar;
+import io.github.yauhenipo.app.layout.AbstractNavBar;
 
-public class AccountPage extends BaseGitHubPage implements WithUserNavBar {
+public class AccountPage extends BaseGitHubPage {
 
-    public <TPage extends BaseGitHubPage> TPage selectNavBar(UserNavBar.NavBar tab, Class<TPage> nextPage) {
-        return userNavBar.select(tab, nextPage);
-    }
+    public final AbstractNavBar userNavBar = new UserNavBar();
 }

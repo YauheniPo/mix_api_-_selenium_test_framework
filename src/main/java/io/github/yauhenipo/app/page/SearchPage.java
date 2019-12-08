@@ -1,33 +1,18 @@
 package io.github.yauhenipo.app.page;
 
+import io.github.yauhenipo.framework.base.element.NavBar;
+import io.github.yauhenipo.framework.base.layout.Builder;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.openqa.selenium.WebElement;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 public class SearchPage extends BaseGitHubPage {
-
-    public List<String> getSearchContentItems(SearchResultTable.Builder builder) {
-        return findElements(builder.get()).stream().map(WebElement::getText).collect(Collectors.toList());
-    }
-
-    public <TPage extends BaseGitHubPage> TPage clickByTextPresent(SearchResultTable.Builder builder, String text, Class<TPage> nextPage) {
-        List<WebElement> elements = findElements(builder.get());
-        elements.stream().findFirst().filter(webElement -> webElement.getText().equals(text)).get().click();
-        try {
-            return nextPage.getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            log.error(e);
-            e.printStackTrace();
-        }
-        return null;
-    }
 
     public SearchPage selectItem(SearchingMenu item) {
         click(item.getItemLocator());
@@ -35,13 +20,14 @@ public class SearchPage extends BaseGitHubPage {
     }
 
     @RequiredArgsConstructor
-    public enum SearchingMenu {
+    public enum SearchingMenu implements NavBar {
         USERS("Users");
 
         @NonNull
         public String item;
         private static final String SEARCHING_MENU_ITEM_LOCATOR = ".//a[contains(@class, '-item') and not(contains(@class, 'UnderlineNav'))][contains(text(), '%1$s')]//span[@data-search-type='%1$s']";
 
+        @Override
         public String getItemLocator() {
             return String.format(SEARCHING_MENU_ITEM_LOCATOR, this.item);
         }
@@ -53,38 +39,37 @@ public class SearchPage extends BaseGitHubPage {
         waitForElementToBeExist(progressLoaderBarLocator);
     }
 
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class SearchResultTable {
 
         private List<String> locators = new ArrayList<>();
 
-        private SearchResultTable() {
+        public static BuilderImpl build() {
+            return new SearchResultTable().new BuilderImpl();
         }
 
-        public static Builder build() {
-            return new SearchResultTable().new Builder();
-        }
-
-        public class Builder {
+        public class BuilderImpl implements Builder {
 
             private static final String SEARCHING_LIST_LOCATOR = ".//div[@class='px-2']";
             private static final String SEARCHING_ITEM_CONTENT_LOCATOR = ".//div[contains(@class, 'list-item')]";
             private static final String SEARCHING_ITEM_LOGIN_LOCATOR = ".//em";
 
-            private Builder() {
+            private BuilderImpl() {
                 locators.add(SEARCHING_LIST_LOCATOR);
             }
 
-            public Builder content() {
+            public BuilderImpl content() {
                 locators.add(SEARCHING_ITEM_CONTENT_LOCATOR);
                 return this;
             }
 
-            public Builder login() {
+            public BuilderImpl login() {
                 locators.add(SEARCHING_ITEM_LOGIN_LOCATOR);
                 return this;
             }
 
-            String[] get() {
+            @Override
+            public String[] get() {
                 return SearchResultTable.this.locators.toArray(new String[0]);
             }
         }
