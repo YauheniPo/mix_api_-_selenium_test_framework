@@ -33,15 +33,15 @@ final public class SmartWait {
         Browser.getDriver().manage().timeouts().implicitlyWait(0L, TimeUnit.SECONDS);
         Wait<WebDriver> wait = new FluentWait<>((WebDriver) Browser.getDriver())
                 .ignoring(StaleElementReferenceException.class, WebDriverException.class)
-                .withTimeout(Duration.ofSeconds(timeOutInSeconds)).pollingEvery(Duration.ofMillis(300));
+                .withTimeout(Duration.ofSeconds(timeOutInSeconds)).pollingEvery(Duration.ofMillis(500));
         try {
             return wait.until(condition);
         } catch (Exception e) {
             log.debug("SmartWait.waitFor", e);
+            return null;
         } finally {
             Browser.getDriver().manage().timeouts().implicitlyWait(Config.getBrowserProperties().getTimeout(), TimeUnit.SECONDS);
         }
-        return null;
     }
 
     /**
@@ -77,7 +77,7 @@ final public class SmartWait {
                 .executeScript("return document.readyState")
                 .toString().equals("complete");
 
-        waitForTrue(jQueryLoad, Config.getBrowserProperties().getConditionTimeout());
-        waitForTrue(jsLoad, Config.getBrowserProperties().getConditionTimeout());
+        waitFor(jQueryLoad, Config.getBrowserProperties().getConditionTimeout());
+        waitFor(jsLoad, Config.getBrowserProperties().getConditionTimeout());
     }
 }
