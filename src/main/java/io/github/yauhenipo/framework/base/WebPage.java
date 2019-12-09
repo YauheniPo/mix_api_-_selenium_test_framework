@@ -46,11 +46,7 @@ public abstract class WebPage extends AbstractWebPage {
 
     protected void click(String locator) {
         log.info(String.format("Click to locator %s", locator));
-        waitUntilElementToBeClickable(locator).click();
-    }
-
-    private WebElement waitUntilElementToBeClickable(String locator) {
-        return SmartWait.waitFor(ExpectedConditions.elementToBeClickable(By.xpath(locator)), Config.getBrowserProperties().getConditionTimeout());
+        findElements(locator).get(0).click();
     }
 
     protected WebElement waitForElementToBeExist(String locator, long timeOutInSeconds) {
@@ -123,5 +119,6 @@ public abstract class WebPage extends AbstractWebPage {
     }
 
     @Override
-    protected void waitUntilProgressLoadingBar(){}
+    protected void waitUntilProgressLoadingBar() {
+    }
 }

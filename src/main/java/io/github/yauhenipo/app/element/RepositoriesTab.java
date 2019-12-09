@@ -2,6 +2,7 @@ package io.github.yauhenipo.app.element;
 
 import io.github.yauhenipo.app.page.BaseGitHubPage;
 import io.github.yauhenipo.framework.base.layout.Builder;
+import io.github.yauhenipo.framework.util.configurations.Config;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,8 +15,10 @@ public class RepositoriesTab extends BaseGitHubPage {
 
     @Override
     public void waitUntilProgressLoadingBar() {
-        log.info("Wait for progress bar.");
-        waitForElementToBeExist(progressLoaderBarLocator);
+        if (waitForElementToBeExist(loaderBarLocator, Config.getBrowserProperties().getTimeout()) != null) {
+            log.info("Wait for progress bar.");
+            waitForElementToBeExist(progressLoaderBarLocator);
+        }
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

@@ -2,11 +2,20 @@ package io.github.yauhenipo.app.element;
 
 import io.github.yauhenipo.app.layout.AbstractNavBar;
 import io.github.yauhenipo.framework.base.element.NavBar;
+import io.github.yauhenipo.framework.util.configurations.Config;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class UserNavBar extends AbstractNavBar {
+
+    @Override
+    public void waitUntilProgressLoadingBar() {
+        if (waitForElementToBeExist(loaderBarLocator, Config.getBrowserProperties().getTimeout()) != null) {
+            log.info("Wait for progress bar.");
+            waitForElementToBeExist(progressLoaderBarLocator);
+        }
+    }
 
     @AllArgsConstructor
     public enum NavBarImpl implements NavBar {

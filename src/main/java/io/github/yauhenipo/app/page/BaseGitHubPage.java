@@ -16,7 +16,7 @@ public abstract class BaseGitHubPage extends WebPage {
 
     public final Header header = new Header();
 
-    private String loaderBarLocator = "//*[contains(@class, 'progress') and contains(@class, 'loader')]";
+    protected String loaderBarLocator = "//body[contains(@class, 'intent-mouse')]//*[contains(@class, 'progress') and contains(@class, 'loader')]";
     protected String progressLoaderBarLocator = loaderBarLocator + "[contains(@style, '100%')]";
 
     public List<String> getContentItems(Builder builder) {
