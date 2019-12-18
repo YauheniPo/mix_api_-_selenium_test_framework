@@ -23,7 +23,7 @@ jobs:
       jdkVersionOption: '1.8'
       jdkArchitectureOption: 'x64'
       publishJUnitResults: false
-      goals: 'clean compile test site -Dmaven.wagon.http.pool=false'
+      goals: 'clean compile -Dbrowser=firefox -DbrowseHeadless=true test site -Dmaven.wagon.http.pool=false'
 
   - task: PublishBuildArtifacts@1
     displayName: Publish Build Artifacts
