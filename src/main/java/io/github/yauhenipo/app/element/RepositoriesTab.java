@@ -13,12 +13,20 @@ import java.util.List;
 @Log4j2
 public class RepositoriesTab extends BaseGitHubPage {
 
+    private static final String SEARCH_REPOS_INPUT_FIELD = "//input[@id='your-repos-filter']";
+
     @Override
     public void waitUntilProgressLoadingBar() {
         if (waitForElementToBeExist(loaderBarLocator, Config.getBrowserProperties().getTimeout()) != null) {
             log.info("Wait for progress bar.");
             waitForElementToBeExist(progressLoaderBarLocator);
         }
+    }
+
+    public RepositoriesTab searchRepository(String repos) {
+        click(SEARCH_REPOS_INPUT_FIELD);
+        setValue(SEARCH_REPOS_INPUT_FIELD, repos);
+        return this;
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

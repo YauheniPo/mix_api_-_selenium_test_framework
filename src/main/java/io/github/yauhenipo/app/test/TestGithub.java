@@ -115,6 +115,7 @@ public class TestGithub extends BaseTestApi {
                         AccountPage.class)
                 .userNavBar
                 .select(UserNavBar.NavBarImpl.REPOSITORIES, RepositoriesTab.class)
+                .searchRepository(forkedRepoText)
                 .clickByContainsTextPresent(RepositoriesTab.RepositoriesTable.build().content().forked(),
                         forkedRepoText,
                         RepositoryPage.class)
