@@ -15,7 +15,7 @@ public class RepositoryNavBar extends AbstractNavBar {
 
         private String hrefPart;
         private String text;
-        private static final String REPO_NAV_BAR_ITEM = ".//nav[contains(@class, 'reponav')]//*[contains(@href, '%s') or contains(text(), '%s')]";
+        private static final String REPO_NAV_BAR_ITEM = ".//nav[@aria-label='Repository']//*[contains(@href, '%s') or contains(text(), '%s')]";
 
         @Override
         public String getItemLocator() {

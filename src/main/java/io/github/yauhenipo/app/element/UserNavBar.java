@@ -19,10 +19,10 @@ public class UserNavBar extends AbstractNavBar {
 
     @AllArgsConstructor
     public enum NavBarImpl implements NavBar {
-        REPOSITORIES("Repositories");
+        REPOSITORIES("TAB_REPOSITORIES");
 
         private String item;
-        private static final String USER_NAV_BAR_ITEM = ".//a[contains(text(), '%s')]";
+        private static final String USER_NAV_BAR_ITEM = ".//a[contains(@data-hydro-click, '%s')]";
 
         @Override
         public String getItemLocator() {
