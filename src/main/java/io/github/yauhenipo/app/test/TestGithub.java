@@ -12,10 +12,8 @@ import io.github.yauhenipo.app.page.repository.RepositoryInsightsTab;
 import io.github.yauhenipo.app.page.repository.RepositoryPage;
 import io.github.yauhenipo.app.page.repository.element.ContributorsDataTab;
 import io.github.yauhenipo.app.page.repository.element.RepositoryNavBar;
-import io.github.yauhenipo.framework.base.BaseTestApi;
+import io.github.yauhenipo.framework.base.api.BaseTestApi;
 import io.github.yauhenipo.framework.util.configurations.Config;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import lombok.extern.log4j.Log4j2;
 import org.testng.annotations.Test;
@@ -24,29 +22,31 @@ import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Severity;
 import ru.yandex.qatools.allure.model.SeverityLevel;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 
 @Log4j2
 public class TestGithub extends BaseTestApi {
 
     private final String searchingUser = Config.getStageProperties().getUser();
+    private Map<String, String> userSearchParam = new HashMap<String, String>() {
+        {
+            put("q", searchingUser);
+        }
+    };
 
     @Features(value = "Search")
     @Description(value = "Validation of searching users")
     @Severity(value = SeverityLevel.NORMAL)
     @Test(groups = {TestGroup.SEARCH, TestGroup.USER})
     public void testSearchProductItems() {
-
-        Response response = RestAssured.given()
-                .contentType(ContentType.JSON).accept(ContentType.JSON)
-                .param("q", searchingUser)
-                .get("search/users")
-                .then().statusCode(200).extract()
-                .response();
+        Response response = apiService.response("search/users", userSearchParam);
 
         List<String> loginUsers = response.path("items.login");
 
@@ -70,35 +70,28 @@ public class TestGithub extends BaseTestApi {
 
         final String forkedRepoText = "healenium-web";
 
-        Response userRepositoriesResponse = RestAssured.given()
-                .contentType(ContentType.JSON).accept(ContentType.JSON)
-                .pathParam("user", searchingUser)
-                .get("/users/{user}/repos")
-                .then().statusCode(200).extract()
-                .response();
+        Map<String, String> userPathParam = new HashMap<String, String>() {
+            {
+                put("user", searchingUser);
+            }
+        };
+
+        Response userRepositoriesResponse =
+                apiService.response("/users/{user}/repos", userSearchParam, userPathParam);
 
         RepositoryApiData forkedRepository = userRepositoriesResponse
                 .jsonPath()
                 .getObject(String.format("findAll {it.fork == true}.find {it.name.equals('%s')}", forkedRepoText),
                         RepositoryApiData.class);
 
-        Response repositoryResponse = RestAssured.given()
-                .contentType(ContentType.JSON).accept(ContentType.JSON)
-                .get(forkedRepository.getUrl())
-                .then().statusCode(200).extract()
-                .response();
+        Response repositoryResponse = apiService.response(forkedRepository.getUrl());
 
         RepositoryApiData repository = repositoryResponse
                 .jsonPath()
                 .getObject("parent",
                         RepositoryApiData.class);
 
-        Response repositoryContributorsResponse = RestAssured.given()
-                .contentType(ContentType.JSON).accept(ContentType.JSON)
-                .baseUri(repository.getUrl())
-                .get("contributors")
-                .then().statusCode(200).extract()
-                .response();
+        Response repositoryContributorsResponse = apiService.response(repository.getUrl(), "contributors");
 
         List<UserApiData> contributorsApiDataList = repositoryContributorsResponse
                 .jsonPath()
